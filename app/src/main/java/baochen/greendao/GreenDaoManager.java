@@ -3,6 +3,7 @@ package baochen.greendao;
 
 import baochen.greendao.dao.gen.DaoMaster;
 import baochen.greendao.dao.gen.DaoSession;
+import baochen.greendao.dao.gen.MySQLiteOpenHelper;
 
 /**
  * Created by baochen  on 2016/9/30.
@@ -17,8 +18,8 @@ public class GreenDaoManager {
     public GreenDaoManager() {
         //创建一个数据库
 
-         devOpenHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), "greendao-db", null);
-        DaoMaster mDaoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
+        MySQLiteOpenHelper helper = new MySQLiteOpenHelper(MyApplication.getContext(), "greendao-db", null);
+        DaoMaster mDaoMaster = new DaoMaster(helper.getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
     }
 

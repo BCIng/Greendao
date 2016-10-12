@@ -57,28 +57,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * @param newName  新名字
      */
     private void updateUser(String prevName, String newName) {
-        UserBeanDao userDao = GreenDaoManager.getInstance().getSession().getUserBeanDao();
-//        User findUser = GreenDaoManager.getInstance().getSession().getUserDao().queryBuilder()
-//                .where(UserDao.Properties.Name.eq(prevName)).build().unique();
+        UserBeanDao userBeanDao = GreenDaoManager.getInstance().getSession().getUserBeanDao();
+        //更新单个
+//        UserBean findUser = GreenDaoManager.getInstance().getSession().getUserBeanDao().queryBuilder()
+//                .where(UserBeanDao.Properties.Name.eq(prevName)).build().unique();
 //        if (findUser != null) {
 //            findUser.setName(newName);
-//            GreenDaoManager.getInstance().getSession().getUserDao().update(findUser);
+//            GreenDaoManager.getInstance().getSession().getUserBeanDao().update(findUser);
 //            Toast.makeText(MyApplication.getContext(), "修改成功", Toast.LENGTH_SHORT).show();
 //
 //        } else {
 //            Toast.makeText(MyApplication.getContext(), "用户不存在", Toast.LENGTH_SHORT).show();
 //        }
-
-        List<UserBean> userList = userDao.queryBuilder().where(UserBeanDao.Properties.Name.eq(prevName)).build().list();
+//批量更新
+        List<UserBean> userList = userBeanDao.queryBuilder().where(UserBeanDao.Properties.Name.eq(prevName)).build().list();
         Log.e("userList", userList + "");
         if (userList.isEmpty()) {
             Toast.makeText(MyApplication.getContext(), "用户不存在", Toast.LENGTH_SHORT).show();
         } else {
             for (UserBean user : userList) {
                 user.setName(newName);
-                userDao.update(user);
+                userBeanDao.update(user);
                 Log.e("修改", "修改成功");
-//            userDao.delete(user);
             }
             Toast.makeText(MyApplication.getContext(), "更新成功", Toast.LENGTH_SHORT).show();
         }
@@ -86,7 +86,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mNewNameET.setText("");
         mNameET.setText("");
         mUserList.clear();
-        mUserList.addAll(userDao.queryBuilder().build().list());
+        mUserList.addAll(userBeanDao.queryBuilder().build().list());
         mUserAdapter.notifyDataSetChanged();
     }
 
@@ -96,20 +96,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * @param name
      */
     private void deleteUser(String name) {
-        UserBeanDao userDao = GreenDaoManager.getInstance().getSession().getUserBeanDao();
-//        User findUser = userDao.queryBuilder().where(UserDao.Properties.Name.eq(name)).build().unique();
-//        if (findUser != null) {
-//            userDao.deleteByKey(findUser.getId());
-//        }
+        UserBeanDao userBeanDao = GreenDaoManager.getInstance().getSession().getUserBeanDao();
         //删除
-        List<UserBean> userList = userDao.queryBuilder().where(UserBeanDao.Properties.Name.eq(name)).build().list();
+//        UserBean findUser = userBeanDao.queryBuilder().where(UserBeanDao.Properties.Name.eq(name)).build().unique();
+//        if (findUser != null) {
+//            userBeanDao.deleteByKey(findUser.getId());
+//            Toast.makeText(this,"删除成功",Toast.LENGTH_LONG).show();
+//        }
+        //根据某一个条件批量删除
+        List<UserBean> userList = userBeanDao.queryBuilder().where(UserBeanDao.Properties.Name.eq(name)).build().list();
         for (UserBean user : userList) {
-            userDao.delete(user);
+            userBeanDao.delete(user);
+            Toast.makeText(this, "删除成功", Toast.LENGTH_LONG).show();
         }
 
         mNameET.setText("");
         mUserList.clear();
-        mUserList.addAll(userDao.queryBuilder().build().list());
+        mUserList.addAll(userBeanDao.queryBuilder().build().list());
         mUserAdapter.notifyDataSetChanged();
     }
 
@@ -120,13 +123,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
      * @param name 名字
      */
     private void insertUser(Long id, String name) {
-        Log.e("name", name);
         UserBeanDao userDao = GreenDaoManager.getInstance().getSession().getUserBeanDao();
         UserBean user = new UserBean(id, name);
         userDao.insert(user);
-
-
-
         mNameET.setText("");
         mUserList.clear();
         mUserList.addAll(userDao.queryBuilder().build().list());

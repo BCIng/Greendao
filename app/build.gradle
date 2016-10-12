@@ -11,7 +11,7 @@ buildscript {
 }
 
 greendao {
-    schemaVersion 5
+    schemaVersion 7
     daoPackage 'baochen.greendao.dao.gen'
     targetGenDir 'src/main/java'
 }
